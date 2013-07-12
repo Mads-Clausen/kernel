@@ -15,3 +15,13 @@
 *.exe
 *.out
 *.app
+
+# Other stuff
+*.pdf
+*.bin
+grub/
+*.iso
+*.sublime-project
+*.sublime-workspace
+obj/
+bin/
