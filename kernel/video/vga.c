@@ -3,7 +3,7 @@
 enum VGA_MODE current_mode = VGA_TEXTMODE;
 
 uint16_t *buffer;
-enum VGA_COLOR vga_fg = COLOR_LIGHT_GREY, vga_bg = COLOR_BLACK;
+enum VGA_COLOR vga_fg = COLOR_DEFAULT_FG, vga_bg = COLOR_DEFAULT_BG;
 int cur_x, cur_y;
 
 void vga_init()

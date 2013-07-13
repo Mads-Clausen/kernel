@@ -1,7 +1,7 @@
 #include <mem.h>
 
-uint32_t *page_directory = (uint32_t *) 0x9C000;
-uint32_t *page_table     = (uint32_t *) 0x9D000;
+uint32_t *page_directory = (uint32_t *) 0x90000;
+uint32_t *page_table     = (uint32_t *) 0x91000;
 
 void init_paging()
 {
@@ -15,8 +15,8 @@ void init_paging()
         address = (uint32_t) (address + 0x1000);
     }
 
-    page_directory[0] = (uint32_t) page_table;
-    page_directory[0] = page_directory[0] | 3;
+    page_directory[0]  = (uint32_t) page_table;
+    page_directory[0] |= 3;
     /* kprintf("page_directory[0] = %x\n", (uint64_t) page_directory[0]); */
 
     for(i = 1; i < 1024; ++i)
@@ -72,7 +72,7 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
     kprintf("ptindex = %u\n", (uint64_t) ptindex);
     pt[ptindex] = 0;
     pt[ptindex] = ((uint32_t) real_addr) | (flags & 0xFFF) | 1;
-    kprintf("Content of PT after if = 0x%x\n", pt[ptindex]);
+    kprintf("Content of PT after if = 0x%x, 0x%x\n", (uint64_t) pt[ptindex], (uint64_t) ((uint32_t) real_addr) | (flags & 0xFFF) | 1);
 }
 
 uint32_t real_addr(uint32_t virtual_addr)

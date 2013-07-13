@@ -517,5 +517,5 @@ _asm_print_test:
     popa
     ret
 
-section .data
+section .rodata
 hello: db "Hello, World!", 0x0a

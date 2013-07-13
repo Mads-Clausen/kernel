@@ -16,8 +16,8 @@ extern char _irq12[];
 extern char _irq13[];
 extern char _irq14[];
 extern char _irq15[];
- 
-void *irq_routines[16] = 
+
+void *irq_routines[16] =
 {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0
@@ -27,29 +27,29 @@ void __irq_remap(int offset1, int offset2)
 {
     uint8_t master_mask = 0;
     uint8_t slave_mask = 0;
-    outb(PIC_MASTER + PIC_COMMAND, PIC_CMD_INIT | PIC_ICW1_ICW4);
-    outb(PIC_SLAVE + PIC_COMMAND, PIC_CMD_INIT | PIC_ICW1_ICW4);
-    outb(PIC_MASTER + PIC_DATA, offset1);
-    outb(PIC_SLAVE + PIC_DATA, offset2);
-    outb(PIC_MASTER + PIC_DATA, 0x04); // Slave PIC at IRQ2
-    outb(PIC_SLAVE + PIC_DATA, 0x02); // Cascade Identity
-    outb(PIC_MASTER + PIC_DATA, PIC_MODE_8086);
-    outb(PIC_SLAVE + PIC_DATA, PIC_MODE_8086);
-    outb(PIC_MASTER + PIC_DATA, master_mask);
-    outb(PIC_SLAVE + PIC_DATA, slave_mask);
+    outb(PIC_MASTER + PIC_COMMAND,  PIC_CMD_INIT | PIC_ICW1_ICW4);
+    outb(PIC_SLAVE  + PIC_COMMAND,  PIC_CMD_INIT | PIC_ICW1_ICW4);
+    outb(PIC_MASTER + PIC_DATA,     offset1);
+    outb(PIC_SLAVE  + PIC_DATA,     offset2);
+    outb(PIC_MASTER + PIC_DATA,     0x04); /* slave PIC at IRQ2 */
+    outb(PIC_SLAVE  + PIC_DATA,     0x02); /* cascade identity */
+    outb(PIC_MASTER + PIC_DATA,     PIC_MODE_8086);
+    outb(PIC_SLAVE  + PIC_DATA,     PIC_MODE_8086);
+    outb(PIC_MASTER + PIC_DATA,     master_mask);
+    outb(PIC_SLAVE  + PIC_DATA,     slave_mask);
 }
 
 void __send_eoi(uint8_t irq)
 {
     if(irq >= 8)
         outb(PIC_SLAVE + PIC_COMMAND, PIC_EOI);
- 
+
     outb(PIC_MASTER + PIC_COMMAND, PIC_EOI);
 }
 
 void irq_install()
 {
-    __irq_remap(32, 40);
+    __irq_remap(32, 40); /* remap to first free IDT entry */
 
     idt_set_gate(32, (uint32_t) _irq0,  0x08, 0x8e);
     idt_set_gate(33, (uint32_t) _irq1,  0x08, 0x8e);

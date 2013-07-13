@@ -17,7 +17,7 @@ void kmain(struct multiboot_info *mbt)
     syscalls_install();
 
     vga_init();
-    kprintf(__kernel_name " v" __kernel_version_str "\n\n");
+    puts_c(__kernel_name " kernel v" __kernel_version_str "\n\n", COLOR_LIGHT_BLUE, COLOR_DEFAULT_BG);
 
     uint64_t mem;
     get_multiboot_info(mbt, &mem);
@@ -30,29 +30,28 @@ void kmain(struct multiboot_info *mbt)
 
     
     init_paging();
-    map_page(0x003000, 0x60000, 3);
-    int *p = (int *) 0x003000;
+    map_page(0x1f03000, 0x60000, 3);
+    int *p = (int *) 0x1f03000;
     *p = 12;
-    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, *p);
+    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, (uint64_t) *p);
 
     map_page(0x2000, 0x60000, 3);
     int *p2 = (int *) 0x2000;
-    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p2, *p2);
+    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p2, (uint64_t) *p2);
 
     _asm_print_test();
     /*  code for function:
      *
-     *   _asm_print_test:
-     *       mov eax, 0x04  ; write
-     *       mov ebx, 0x01  ; to terminal
-     *       mov ecx, hello ; the buffer to write from
-     *       int 0x80
+     *  _asm_print_test:
+     *      mov eax, 0x04  ; write
+     *      mov ebx, 0x01  ; to terminal
+     *      mov ecx, hello ; the buffer to write from
+     *      int 0x80
      *
-     *   [...]
+     *  [...]
      *
-     *   section .data
-     *   hello: db "Hello, World!", 0x0a
-     * 
+     *  section .rodata
+     *  hello: db "Hello, World!", 0x0a
      */
 
     return;

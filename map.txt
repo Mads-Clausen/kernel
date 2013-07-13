@@ -1,0 +1,299 @@
+Archive member included because of file (symbol)
+
+/usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+                              obj/system.o (__udivdi3)
+/usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+                              obj/system.o (__umoddi3)
+
+Allocating common symbols
+Common symbol       size              file
+
+cur_y               0x4               obj/vga.o
+gp                  0x6               obj/gdt.o
+idtp                0x6               obj/idt.o
+gdt                 0x18              obj/gdt.o
+buffer              0x4               obj/vga.o
+idt                 0x800             obj/idt.o
+cur_x               0x4               obj/vga.o
+
+Discarded input sections
+
+ .comment       0x0000000000000000       0x2b obj/idt.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/idt.o
+ .eh_frame      0x0000000000000000       0xa0 obj/idt.o
+ .comment       0x0000000000000000       0x2b obj/irq.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/irq.o
+ .eh_frame      0x0000000000000000       0xdc obj/irq.o
+ .comment       0x0000000000000000       0x2b obj/gdt.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/gdt.o
+ .eh_frame      0x0000000000000000       0x58 obj/gdt.o
+ .comment       0x0000000000000000       0x2b obj/main.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/main.o
+ .eh_frame      0x0000000000000000       0x40 obj/main.o
+ .comment       0x0000000000000000       0x2b obj/system.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/system.o
+ .eh_frame      0x0000000000000000      0x1a4 obj/system.o
+ .comment       0x0000000000000000       0x2b obj/syscall.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/syscall.o
+ .eh_frame      0x0000000000000000       0x58 obj/syscall.o
+ .comment       0x0000000000000000       0x2b obj/vga.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/vga.o
+ .eh_frame      0x0000000000000000      0x17c obj/vga.o
+ .comment       0x0000000000000000       0x2b obj/mem.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 obj/mem.o
+ .eh_frame      0x0000000000000000       0xb0 obj/mem.o
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+ .eh_frame      0x0000000000000000       0x58 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+ .comment       0x0000000000000000       0x2b /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+ .note.GNU-stack
+                0x0000000000000000        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+ .eh_frame      0x0000000000000000       0x5c /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD obj/idt.o
+LOAD obj/irq.o
+LOAD obj/gdt.o
+LOAD obj/main.o
+LOAD obj/system.o
+LOAD obj/syscall.o
+LOAD obj/vga.o
+LOAD obj/mem.o
+LOAD obj/start.o
+LOAD obj/bootload.o
+LOAD /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a
+                0x000000001badb002                MULTIBOOT_MAGIC = 0x1badb002
+                0x0000000000000002                MULTIBOOT_MEMORY_INFO = 0x2
+                0x0000000000000002                MULTIBOOT_FLAGS = MULTIBOOT_MEMORY_INFO
+                0xffffffffe4524ffc                MULTIBOOT_CHECKSUM = - ((MULTIBOOT_MAGIC + MULTIBOOT_FLAGS))
+                0x0000000000001000                PAGE_SIZE = 0x1000
+                0x0000000000100000                . = 0x100000
+
+.multiboot      0x0000000000100000        0xc
+                0x0000000000100000        0x4 LONG 0x1badb002 MULTIBOOT_MAGIC
+                0x0000000000100004        0x4 LONG 0x2 MULTIBOOT_FLAGS
+                0x0000000000100008        0x4 LONG 0xffffffffe4524ffc MULTIBOOT_CHECKSUM
+
+.text           0x0000000000101000     0x228f
+ *(.text)
+ .text          0x0000000000101000      0x71b obj/idt.o
+                0x0000000000101000                idt_set_gate
+                0x0000000000101067                idt_install
+                0x00000000001010e0                isr_install
+                0x0000000000101588                _interrupt_handler
+ *fill*         0x000000000010171b        0x1 
+ .text          0x000000000010171c      0x41a obj/irq.o
+                0x000000000010171c                __irq_remap
+                0x00000000001017f8                __send_eoi
+                0x0000000000101834                irq_install
+                0x0000000000101aa1                irq_install_handler
+                0x0000000000101abd                _irq_handler
+                0x0000000000101b1c                irq_enabled
+ *fill*         0x0000000000101b36        0x2 
+ .text          0x0000000000101b38      0x13f obj/gdt.o
+                0x0000000000101b38                gdt_set_gate
+                0x0000000000101bd3                gdt_install
+ *fill*         0x0000000000101c77        0x1 
+ .text          0x0000000000101c78      0x112 obj/main.o
+                0x0000000000101c78                kmain
+ *fill*         0x0000000000101d8a        0x2 
+ .text          0x0000000000101d8c      0x75b obj/system.o
+                0x0000000000101d8c                inb
+                0x0000000000101db6                outb
+                0x0000000000101dd4                io_wait
+                0x0000000000101ddd                cpuid
+                0x0000000000101df3                wrmsr
+                0x0000000000101e12                memset
+                0x0000000000101e42                memcpy
+                0x0000000000101e7d                strlen
+                0x0000000000101ea1                convert
+                0x0000000000101eea                convert_u
+                0x0000000000101f7a                kprintf
+                0x000000000010217c                ksprintf
+ *fill*         0x00000000001024e7        0x1 
+ .text          0x00000000001024e8       0x74 obj/syscall.o
+                0x00000000001024e8                syscalls_install
+                0x000000000010253a                syscall_handler
+ .text          0x000000000010255c      0x3e0 obj/vga.o
+                0x000000000010255c                vga_init
+                0x000000000010256b                vga_setmode
+                0x0000000000102578                _vga_make_entry
+                0x00000000001025dd                vga_make_entry
+                0x000000000010261d                vga_scroll_down
+                0x0000000000102622                vga_set_cursorpos
+                0x0000000000102708                vga_putentry
+                0x0000000000102746                putch
+                0x00000000001027e7                putch_c
+                0x0000000000102882                puts
+                0x00000000001028d8                puts_c
+ .text          0x000000000010293c      0x496 obj/mem.o
+                0x000000000010293c                init_paging
+                0x0000000000102a56                map_page
+                0x0000000000102cab                real_addr
+                0x0000000000102cf0                get_multiboot_info
+ *fill*         0x0000000000102dd2        0xe 
+ .text          0x0000000000102de0      0x1b8 obj/start.o
+                0x0000000000102de0                _load_idt
+                0x0000000000102de8                _gdt_flush
+                0x0000000000102e05                _isr0
+                0x0000000000102e0f                _isr1
+                0x0000000000102e16                _isr2
+                0x0000000000102e1d                _isr3
+                0x0000000000102e24                _isr4
+                0x0000000000102e2b                _isr5
+                0x0000000000102e32                _isr6
+                0x0000000000102e39                _isr7
+                0x0000000000102e40                _isr8
+                0x0000000000102e45                _isr9
+                0x0000000000102e4c                _isr10
+                0x0000000000102e51                _isr11
+                0x0000000000102e56                _isr12
+                0x0000000000102e5b                _isr13
+                0x0000000000102e60                _isr14
+                0x0000000000102e65                _isr15
+                0x0000000000102e6c                _isr16
+                0x0000000000102e73                _isr17
+                0x0000000000102e7a                _isr18
+                0x0000000000102e81                _isr20
+                0x0000000000102e81                _isr25
+                0x0000000000102e81                _isr23
+                0x0000000000102e81                _isr21
+                0x0000000000102e81                _isr28
+                0x0000000000102e81                _isr26
+                0x0000000000102e81                _isr29
+                0x0000000000102e81                _isr31
+                0x0000000000102e81                _isr24
+                0x0000000000102e81                _isr27
+                0x0000000000102e81                _isr30
+                0x0000000000102e81                _isr19
+                0x0000000000102e81                _isr22
+                0x0000000000102e88                _isr80
+                0x0000000000102eb8                _irq0
+                0x0000000000102ebe                _irq1
+                0x0000000000102ec4                _irq2
+                0x0000000000102eca                _irq3
+                0x0000000000102ed0                _irq4
+                0x0000000000102ed6                _irq5
+                0x0000000000102edc                _irq6
+                0x0000000000102ee2                _irq7
+                0x0000000000102ee8                _irq8
+                0x0000000000102eee                _irq9
+                0x0000000000102ef4                _irq10
+                0x0000000000102efa                _irq11
+                0x0000000000102f00                _irq12
+                0x0000000000102f06                _irq13
+                0x0000000000102f0c                _irq14
+                0x0000000000102f12                _irq15
+                0x0000000000102f41                _read_cr0
+                0x0000000000102f45                _write_cr0
+                0x0000000000102f50                _read_cr1
+                0x0000000000102f54                _write_cr1
+                0x0000000000102f5f                _read_cr2
+                0x0000000000102f63                _write_cr2
+                0x0000000000102f6e                _read_cr3
+                0x0000000000102f72                _write_cr3
+                0x0000000000102f7d                _flush_tlb
+                0x0000000000102f84                _asm_print_test
+ .text          0x0000000000102f98        0xf obj/bootload.o
+                0x0000000000102f98                _start
+ *fill*         0x0000000000102fa7        0x9 
+ .text          0x0000000000102fb0      0x14d /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+                0x0000000000102fb0                __udivdi3
+ *fill*         0x00000000001030fd        0x3 
+ .text          0x0000000000103100      0x18f /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+                0x0000000000103100                __umoddi3
+
+.iplt           0x0000000000103290        0x0
+ .iplt          0x0000000000000000        0x0 obj/idt.o
+
+.rodata         0x0000000000104000      0x632
+ *(.rodata)
+ .rodata        0x0000000000104000      0x2b3 obj/idt.o
+ .rodata        0x00000000001042b3       0x22 obj/main.o
+ *fill*         0x00000000001042d5        0x3 
+ .rodata        0x00000000001042d8      0x2b4 obj/system.o
+ .rodata        0x000000000010458c       0x95 obj/mem.o
+ *fill*         0x0000000000104621        0x3 
+ .rodata        0x0000000000104624        0xe obj/start.o
+
+.eh_frame_hdr   0x0000000000104634        0x0
+ .eh_frame_hdr  0x0000000000000000        0x0 obj/idt.o
+
+.rel.dyn        0x0000000000104634        0x0
+ .rel.iplt      0x0000000000000000        0x0 obj/idt.o
+ .rel.text      0x0000000000000000        0x0 obj/idt.o
+
+.data           0x0000000000105000       0x58
+ *(.data)
+ .data          0x0000000000105000       0x4c obj/idt.o
+                0x0000000000105000                exception_msgs
+ .data          0x000000000010504c        0x0 obj/irq.o
+ .data          0x000000000010504c        0x0 obj/gdt.o
+ .data          0x000000000010504c        0x0 obj/main.o
+ .data          0x000000000010504c        0x0 obj/system.o
+ .data          0x000000000010504c        0x0 obj/syscall.o
+ .data          0x000000000010504c        0x4 obj/vga.o
+                0x000000000010504c                vga_fg
+ .data          0x0000000000105050        0x8 obj/mem.o
+                0x0000000000105050                page_directory
+                0x0000000000105054                page_table
+ .data          0x0000000000105058        0x0 obj/bootload.o
+ .data          0x0000000000105058        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+ .data          0x0000000000105058        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+
+.igot.plt       0x0000000000105058        0x0
+ .igot.plt      0x0000000000000000        0x0 obj/idt.o
+
+.bss            0x0000000000106000     0x490c
+ *(COMMON)
+ COMMON         0x0000000000106000      0x820 obj/idt.o
+                0x0000000000106000                idtp
+                0x0000000000106020                idt
+ COMMON         0x0000000000106820       0x1e obj/gdt.o
+                0x0000000000106820                gp
+                0x0000000000106826                gdt
+ *fill*         0x000000000010683e        0x2 
+ COMMON         0x0000000000106840        0xc obj/vga.o
+                0x0000000000106840                cur_y
+                0x0000000000106844                buffer
+                0x0000000000106848                cur_x
+ *(.bss)
+ .bss           0x000000000010684c        0x0 obj/idt.o
+ *fill*         0x000000000010684c       0x14 
+ .bss           0x0000000000106860       0x40 obj/irq.o
+                0x0000000000106860                irq_routines
+ .bss           0x00000000001068a0        0x0 obj/gdt.o
+ .bss           0x00000000001068a0        0x0 obj/main.o
+ .bss           0x00000000001068a0       0x61 obj/system.o
+ *fill*         0x0000000000106901        0x3 
+ .bss           0x0000000000106904        0x0 obj/syscall.o
+ .bss           0x0000000000106904        0x8 obj/vga.o
+                0x0000000000106904                current_mode
+                0x0000000000106908                vga_bg
+ .bss           0x000000000010690c        0x0 obj/mem.o
+ .bss           0x000000000010690c        0x0 obj/bootload.o
+ .bss           0x000000000010690c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_udivdi3.o)
+ .bss           0x000000000010690c        0x0 /usr/lib/gcc/x86_64-linux-gnu/4.7/32/libgcc.a(_umoddi3.o)
+ *(.bootstrap_stack)
+ .bootstrap_stack
+                0x000000000010690c     0x4000 obj/bootload.o
+
+/DISCARD/
+ *(.comment .note* .eh_frame .dtors)
+                0x000000000010b000                _kernel_memory_end = ALIGN (PAGE_SIZE)
+OUTPUT(grub/boot/kernel.bin elf32-i386)
