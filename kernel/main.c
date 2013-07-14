@@ -30,8 +30,8 @@ void kmain(struct multiboot_info *mbt)
 
     
     init_paging();
-    map_page(0x1f03000, 0x60000, 3);
-    int *p = (int *) 0x1f03000;
+    map_page(0xf0f00000, 0x60000, 3);
+    int *p = (int *) 0xf0f00000;
     *p = 12;
     kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, (uint64_t) *p);
 
@@ -41,6 +41,9 @@ void kmain(struct multiboot_info *mbt)
 
     _asm_print_test();
     /*  code for function:
+     *
+     *  section .text
+     *      global _asm_print_test
      *
      *  _asm_print_test:
      *      mov eax, 0x04  ; write

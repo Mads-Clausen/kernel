@@ -25,3 +25,5 @@ grub/
 *.sublime-workspace
 obj/
 bin/
+map.txt
+.bochsrc
