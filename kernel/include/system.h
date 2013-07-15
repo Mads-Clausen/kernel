@@ -41,11 +41,12 @@
 #define PIC_MODE_BUF_MASTER 0x0c
 #define PIC_MODE_SFNM       0x10
 
-struct regs {
-    unsigned int gs, fs, es, ds;
-    unsigned int edi, esi, ebp, esp, ebx, edx, ecx, eax;
-    unsigned int int_no, err_code;
-    unsigned int eip, cs, eflags, useresp, ss;
+struct regs
+{
+    uint32_t gs, fs, es, ds;
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t int_no, err_code;
+    uint32_t eip, cs, eflags, useresp, ss;
 };
 
 /* I/O functions */
@@ -75,6 +76,9 @@ void irq_install_handler(uint8_t index, void (*handler)(struct regs *));
 
 /** Install syscalls */
 void syscalls_install(void);
+
+/** Dump the registers to the terminal */
+void dump_regs(struct regs *r);
 
 /** See glibc documentation */
 int   strlen(char *s);

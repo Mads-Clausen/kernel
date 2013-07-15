@@ -14,7 +14,7 @@ void syscall_handler(struct regs *r)
 	{
 		case 0x04: /* write */
 		{
-			kprintf((char *) r->ecx);
+			puts_c((char *) r->ebx, r->ecx, r->edx);
 
 			break;
 		}

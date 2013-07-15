@@ -41,9 +41,9 @@ extern char _isr31[];
 struct idt_entry
 {
     uint16_t base_lo;
-    uint16_t sel;        /* Our kernel segment goes here! */
-    uint8_t always0;     /* This will ALWAYS be set to 0! */
-    uint8_t flags;       /* Set using the above table! */
+    uint16_t sel;        /* our kernel segment goes here! */
+    uint8_t always0;     /* this will ALWAYS be set to 0! */
+    uint8_t flags;       /* set using the above table! */
     uint16_t base_hi;
 } __attribute__((packed));
 
@@ -121,6 +121,8 @@ void isr_install()
     idt_set_gate(29, (uint32_t) _isr29, 0x08, 0x8E);
     idt_set_gate(30, (uint32_t) _isr30, 0x08, 0x8E);
     idt_set_gate(31, (uint32_t) _isr31, 0x08, 0x8E);
+
+    kprintf("Value of IDT[0]: 0x%x\n", (uint64_t) (idt[0].base_lo | (idt[0].base_hi << 16)));
 }
 
 char *exception_msgs[] = 
@@ -150,7 +152,6 @@ extern uint32_t _read_cr2();
 
 void _interrupt_handler(struct regs *r)
 {
-    // kprintf("INTERRUPT 0x%x, %u\n", (uint64_t) r->int_no, (uint64_t) r->int_no);
     if(r->int_no < 19)
     {
         puts_c(exception_msgs[r->int_no], COLOR_RED, COLOR_BLACK);
@@ -180,6 +181,9 @@ void _interrupt_handler(struct regs *r)
 
         kprintf("Error code: 0x%x, %u\n", (uint64_t) r->err_code, (uint64_t) r->err_code);
         kprintf("Error occured at virtual address 0x%x\n", (uint32_t) r->eip);
+
+        kprintf("Register dump:\n");
+        dump_regs(r);
 
         asm volatile("hlt");
     }

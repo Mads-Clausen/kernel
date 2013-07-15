@@ -301,3 +301,22 @@ void ksprintf(char *buffer, char *format, ...)
 
     va_end(argp);
 }
+
+extern uint32_t _read_cr0();
+extern uint32_t _read_cr1();
+extern uint32_t _read_cr2();
+extern uint32_t _read_cr3();
+
+void dump_regs(struct regs *r)
+{
+    /*
+    kprintf("eax: %u, ebx: %u\necx: %u, edx: %u\nesi: %u, edi: %u\ncr0: %u, cr1: %u, cr2: %u, cr3: %u\n",
+            (uint64_t) r->eax, (uint64_t) r->ebx, (uint64_t) r->ecx, (uint64_t) r->edx,
+            (uint64_t) r->esi, (uint64_t) r->edi,
+            (uint64_t) _read_cr0(), (uint64_t) _read_cr1(), 
+            (uint64_t) _read_cr2(), (uint64_t) _read_cr3()); /**/
+
+    kprintf("eax: %u, ebx: %u\necx: %u, edx: %u\nesi: %u, edi: %u\n",
+            (uint64_t) r->eax, (uint64_t) r->ebx, (uint64_t) r->ecx, (uint64_t) r->edx,
+            (uint64_t) r->esi, (uint64_t) r->edi);
+}

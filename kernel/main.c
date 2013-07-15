@@ -10,24 +10,22 @@ extern void _asm_print_test();
 
 void kmain(struct multiboot_info *mbt)
 {
+    vga_init();
+
     gdt_install();
     idt_install();
     isr_install();
     irq_install();
     syscalls_install();
 
-    vga_init();
     puts_c(__kernel_name " kernel v" __kernel_version_str "\n\n", COLOR_LIGHT_BLUE, COLOR_DEFAULT_BG);
 
     uint64_t mem;
     get_multiboot_info(mbt, &mem);
 
     extern uint32_t _kernel_memory_end[];
-    /**
     kprintf("End of kernel's memory: 0x%x\n", (uint64_t) (uint32_t) _kernel_memory_end);
     kprintf("Memory:\n%l B\n%l KB\n%l MB\n%l GB\n", mem, mem / 1024, mem / 1024 / 1024, mem / 1024 / 1024 / 1024);
-    /**/
-
     
     init_paging();
     map_page(0xf0f00000, 0x60000, 3);
@@ -56,6 +54,8 @@ void kmain(struct multiboot_info *mbt)
      *  section .rodata
      *  hello: db "Hello, World!", 0x0a
      */
+
+    kprintf("\n");
 
     return;
 }

@@ -510,9 +510,10 @@ _flush_tlb:
 global _asm_print_test
 _asm_print_test:
     pusha
-    mov eax, 0x04
-    mov ebx, 0x01
-    mov ecx, hello
+    mov eax, 4
+    mov ebx, hello
+    mov ecx, 5  ; magenta
+    mov edx, 10 ; light green
     int 0x80
     popa
     ret

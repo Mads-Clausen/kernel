@@ -50,9 +50,9 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
     uint32_t ptindex = virtual_addr >> 12 & 0x3FF;
 
     uint32_t *pt = (page_table) + (1024 * pdindex);
-    
+
     /*
-    kprintf("pdindex = %u. Content = 0x%x. pt = 0x%x\n", (uint64_t) pdindex, 
+    kprintf("pdindex = %u. Content = 0x%x. pt = 0x%x\n", (uint64_t) pdindex,
                                 (uint64_t) page_directory[pdindex] & 0x01, (uint64_t) (uint32_t) pt); /**/
 
     if(page_directory[pdindex] == 0) /* it isn't present, create a new one */
@@ -67,19 +67,19 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
         kprintf("PD loc: 0x%x\n", (uint64_t) (uint32_t) page_directory + pdindex); /**/
         page_directory[pdindex] = (uint32_t) pt;
         page_directory[pdindex] |= 3;
-        
+
         /*
         kprintf("Content of PD after if = 0x%x\n", (uint64_t) page_directory[pdindex]); /**/
         _flush_tlb();
     }
- 
+
     /*
     kprintf("Real address = 0x%x\n", (uint64_t) ((uint32_t) real_addr) | (flags & 0xFFF) | 1);
     kprintf("ptindex = %u\n", (uint64_t) ptindex); /**/
     pt[ptindex] = 0;
     pt[ptindex] = ((uint32_t) real_addr) | (flags & 0xFFF) | 1;
     /*
-    kprintf("Content of PT after if = 0x%x, 0x%x\n", (uint64_t) pt[ptindex], 
+    kprintf("Content of PT after if = 0x%x, 0x%x\n", (uint64_t) pt[ptindex],
                                 (uint64_t) ((uint32_t) real_addr) | (flags & 0xFFF) | 1); /**/
 }
 
@@ -99,7 +99,7 @@ void get_multiboot_info(struct multiboot_info *mbt, uint64_t *bytes)
     int i = 0;
     while((uint32_t) mmap < mbt->mmap_addr + mbt->mmap_length)
     {
-        if(mmap->type == 1) 
+        if(mmap->type == 1)
             *bytes +=   (uint64_t) (mmap->length_low    | (uint64_t) (mmap->length_high) << 32) +
                         (uint64_t) (mmap->base_addr_low | (uint64_t) (mmap->base_addr_high) << 32);
         mmap = (memory_map_t *) ((unsigned int) mmap + mmap->size + sizeof(mmap->size));

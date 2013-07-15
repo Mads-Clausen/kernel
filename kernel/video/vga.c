@@ -45,7 +45,18 @@ uint16_t vga_make_entry(struct vga_entry *e)
 
 void vga_scroll_down(int n)
 {
+    cur_y -= n;
 
+    /* move lines up */
+    unsigned int y, x;
+    for(y = n; y < VGA_TEXT_HEIGHT; ++y)
+        for(x = 0; x < VGA_TEXT_WIDTH; ++x)
+            buffer[(y - 1) * VGA_TEXT_WIDTH + x] = 0 | buffer[y * VGA_TEXT_WIDTH + x];
+
+    /* clear the bottom n lines */
+    for(y = VGA_TEXT_HEIGHT - 1; y >= VGA_TEXT_HEIGHT - n; --y)
+        for(x = 0; x < VGA_TEXT_WIDTH; ++x)
+            buffer[y * VGA_TEXT_WIDTH + x] = 0;
 }
 
 void vga_set_cursorpos(int x, int y)

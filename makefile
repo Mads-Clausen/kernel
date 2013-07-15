@@ -4,7 +4,7 @@ CFLAGS    = -m32 -c -std=gnu99 -ffreestanding -O0 -I./kernel/include
 LINKER    = gcc
 LINKFILE  = link.ld
 BIN       = grub/boot/kernel.bin
-LFLAGS    = -Wl,-Map,map.txt -m32 -T link.ld -o $(BIN) -ffreestanding -O0 -nostdlib -lgcc
+LFLAGS    = -Wl,-Map,map.txt -m32 -T link.ld -o $(BIN) -ffreestanding -O2 -nostdlib -lgcc
 
 ISO       = kernel.iso
 BURNER    = grub-mkrescue -o $(ISO) ./grub
