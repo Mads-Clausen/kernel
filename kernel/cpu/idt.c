@@ -41,9 +41,9 @@ extern char _isr31[];
 struct idt_entry
 {
     uint16_t base_lo;
-    uint16_t sel;        /* our kernel segment goes here! */
-    uint8_t always0;     /* this will ALWAYS be set to 0! */
-    uint8_t flags;       /* set using the above table! */
+    uint16_t sel;
+    uint8_t always0;
+    uint8_t flags;
     uint16_t base_hi;
 } __attribute__((packed));
 
