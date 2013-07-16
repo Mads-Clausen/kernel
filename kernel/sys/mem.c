@@ -43,7 +43,48 @@ void map_page(uint32_t virtual_addr, uint64_t real_addr)
 
 extern void _flush_tlb();
 
-/* NOTE: VIRTUAL ADDRESSES ARE LIMITED TO 0xF0F00000 */
+uint32_t allocate_page()
+{
+    uint8_t new_pt = 0;
+    uint32_t pdi, pti;
+    for(pdi = 0; pti < 1024; ++pdi)
+    {
+        if((page_directory[pdi] & 1) == 0)
+        {
+            kprintf("NEW PT AT INDEX %u\n", (uint64_t) pdi);
+            new_pt = 1;
+            break; /* found a free PT, all pages are free */
+        }
+
+        for(pti = 0; pti < 1024; ++pti)
+        {
+            if(((uint32_t *) page_directory[pdi])[pti] & 1 == 0)
+                break;
+        }
+    }
+
+    uint32_t *pt = (page_table) + (1024 * pdi);
+
+    if(new_pt)
+    {
+        uint32_t i;
+        for(i = 0; i < 1024; ++i)
+        {
+            pt[i] = 3; /* attribute set to: supervisor level, read/write, present(010 in binary) */
+        }
+
+        page_directory[pdi] = (uint32_t) pt;
+        page_directory[pdi] |= 3;
+    }
+
+    pt[pti] = 3;
+    uint32_t virtual_addr;
+    virtual_addr |= pdi << 22;
+    virtual_addr |= pti << 12 & 0x3FF;
+    virtual_addr |= 3;
+    return virtual_addr;
+}
+
 void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
 {
     uint32_t pdindex = virtual_addr >> 22;
@@ -55,8 +96,9 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
     kprintf("pdindex = %u. Content = 0x%x. pt = 0x%x\n", (uint64_t) pdindex,
                                 (uint64_t) page_directory[pdindex] & 0x01, (uint64_t) (uint32_t) pt); /**/
 
-    if(page_directory[pdindex] == 0) /* it isn't present, create a new one */
+    if((page_directory[pdindex] & 1) == 0) /* it isn't present, create a new one */
     {
+        // kprintf("yiss\n");
         uint32_t i;
         for(i = 0; i < 1024; ++i)
         {

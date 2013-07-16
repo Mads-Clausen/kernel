@@ -5,10 +5,16 @@
 #include <system.h>
 #include <multiboot.h>
 
+struct page_descriptor
+{
+    int pdindex, ptindex;
+};
+
 void init_paging(void);
 // void map_page(uint32_t virtual_addr, uint64_t real_addr);
 void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags);
 uint32_t real_addr(uint32_t virtual_addr);
+uint32_t allocate_page();
 
 void get_multiboot_info(struct multiboot_info *mbt, uint64_t *bytes);
 

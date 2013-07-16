@@ -28,14 +28,19 @@ void kmain(struct multiboot_info *mbt)
     kprintf("Memory:\n%l B\n%l KB\n%l MB\n%l GB\n", mem, mem / 1024, mem / 1024 / 1024, mem / 1024 / 1024 / 1024);
     
     init_paging();
-    map_page(0xf0f00000, 0x60000, 3);
-    int *p = (int *) 0xf0f00000;
+    map_page(0xFD7FF000, 0x60000, 3);
+    int *p = (int *) 0xFD7FF000;
     *p = 12;
     kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, (uint64_t) *p);
 
-    map_page(0x2000, 0x60000, 3);
-    int *p2 = (int *) 0x2000;
+    map_page(0x10000000, 0x60000, 3);
+    int *p2 = (int *) 0x10000000;
     kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p2, (uint64_t) *p2);
+
+    uint32_t addr = allocate_page();
+    uint32_t pdindex = addr >> 22;
+    uint32_t ptindex = addr >> 12 & 0x3FF;
+    kprintf("Allocated page: 0x%x, pdi: %u, pti: %u\n", (uint64_t) addr, (uint64_t) pdindex, (uint64_t) ptindex);
 
     _asm_print_test();
     /*  code for function:

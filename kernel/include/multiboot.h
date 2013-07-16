@@ -23,7 +23,7 @@
 /* The magic number for the Multiboot header. */
 #define MULTIBOOT_HEADER_MAGIC          0x1BADB002
 
-/* The flags for the Multiboot header. */
+/* The flags for the multiboot header. */
 #ifdef __ELF__
 # define MULTIBOOT_HEADER_FLAGS         0x00000003
 #else
