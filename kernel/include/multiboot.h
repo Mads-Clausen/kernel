@@ -18,6 +18,10 @@
 
 #ifndef __MULTIBOOT_H_INCLUDED__
 #define __MULTIBOOT_H_INCLUDED__
+
+#include <stdint.h>
+#include <system.h>
+
 /* Macros. */
 
 /* The magic number for the Multiboot header. */
@@ -119,4 +123,8 @@ typedef struct memory_map
 } memory_map_t;
 
 #endif
+
+/** Print information in the multiboot header */
+void get_multiboot_info(struct multiboot_info *mbt, uint64_t *bytes);
+
 #endif

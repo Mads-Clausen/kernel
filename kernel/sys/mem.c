@@ -2,6 +2,7 @@
 
 uint32_t *page_directory = (uint32_t *) 0x9000;
 uint32_t *page_table     = (uint32_t *) 0xA000;
+uint32_t *bitmap;
 
 void init_paging()
 {
@@ -9,7 +10,7 @@ void init_paging()
     uint32_t i;
 
     /* map first 4 MiB 1:1 */
-    for(i = 0; i < 1024; ++i)
+    for(i = 0; i < PT_LENGTH; ++i)
     {
         page_table[i] = (address & ~(0xFFF)) | 3; /* attribute set to: supervisor level, read/write, present(011 in binary) */
         address = (uint32_t) (address + 0x1000);
@@ -19,10 +20,31 @@ void init_paging()
     page_directory[0] |= 3;
     /* kprintf("page_directory[0] = %x\n", (uint64_t) page_directory[0]); */
 
-    for(i = 1; i < 1024; ++i)
+    for(i = 1; i < PD_LENGTH; ++i)
     {
         page_directory[i] = 0;
     }
+
+    /* allocate space for the header */
+    uint32_t *header = page_table + PT_LENGTH;
+    bitmap = (uint32_t *) address;
+    for(i = 0; i < PT_LENGTH; ++i)
+    {
+        header[i] = (address & ~(0xFFF)) | 3; /* attribute set to: supervisor level, read/write, present(011 in binary) */
+        address = (uint32_t) (address + 0x1000);
+    }
+
+    /* set all pages to present in the header */
+    for(i = 0; i < PD_LENGTH * PT_LENGTH; ++i)
+    {
+        bitmap[i] = 1; /* present */
+    }
+
+    for(i = 0; i < 2 * 1024; ++i)
+        bitmap[i] = 3; /* present, in use, process ID 0(kernel) */
+
+    page_directory[1]  = (uint32_t) header;
+    page_directory[1] |= 3;
 
     extern void     _write_cr3(uint32_t);
     extern void     _write_cr0(uint32_t);
@@ -37,52 +59,44 @@ void map_page(uint32_t virtual_addr, uint64_t real_addr)
 {
 
     virtual_addr /= 0x1000;
-    *((uint32_t *)(page_directory[virtual_addr / 1024]) + virtual_addr % 1024) = (real_addr & ~(0xFFF)) | 3;
+    *((uint32_t *)(page_directory[virtual_addr / PT_LENGTH]) + virtual_addr % PT_LENGTH) = (real_addr & ~(0xFFF)) | 3;
 }
 */
 
 extern void _flush_tlb();
 
-uint32_t allocate_page()
+uint32_t allocate_page(uint16_t proc_id)
 {
-    uint8_t new_pt = 0;
-    uint32_t pdi, pti;
-    for(pdi = 0; pti < 1024; ++pdi)
-    {
-        if((page_directory[pdi] & 1) == 0)
-        {
-            kprintf("NEW PT AT INDEX %u\n", (uint64_t) pdi);
-            new_pt = 1;
-            break; /* found a free PT, all pages are free */
-        }
+    unsigned int i;
 
-        for(pti = 0; pti < 1024; ++pti)
+    for(i = 0; i < PD_LENGTH * PT_LENGTH; ++i)
+    {
+        if((bitmap[i] & 1) && !(bitmap[i] & 2))
         {
-            if(((uint32_t *) page_directory[pdi])[pti] & 1 == 0)
-                break;
+            bitmap[i] |= (proc_id << 16) | 2; /* put the process ID into the top 16 bits */
+            break;
         }
     }
 
-    uint32_t *pt = (page_table) + (1024 * pdi);
+    uint32_t    pti = i - (i / 1024) * 1024,
+                pdi = i / 1024;
 
-    if(new_pt)
+    return pdi * 0x400000 + pti * 0x1000;
+}
+
+void print_next_available_page()
+{
+    unsigned int i;
+
+    for(i = 0; i < PD_LENGTH * PT_LENGTH; ++i)
     {
-        uint32_t i;
-        for(i = 0; i < 1024; ++i)
+
+        if((bitmap[i] & 1) && !(bitmap[i] & 2))
         {
-            pt[i] = 3; /* attribute set to: supervisor level, read/write, present(010 in binary) */
+            kprintf("Next available page:\nPTI: %i\nPDI: %i\n", i - (i / 1024) * 1024, i / 1024);
+            break;
         }
-
-        page_directory[pdi] = (uint32_t) pt;
-        page_directory[pdi] |= 3;
     }
-
-    pt[pti] = 3;
-    uint32_t virtual_addr;
-    virtual_addr |= pdi << 22;
-    virtual_addr |= pti << 12 & 0x3FF;
-    virtual_addr |= 3;
-    return virtual_addr;
 }
 
 void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
@@ -90,7 +104,7 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
     uint32_t pdindex = virtual_addr >> 22;
     uint32_t ptindex = virtual_addr >> 12 & 0x3FF;
 
-    uint32_t *pt = (page_table) + (1024 * pdindex);
+    uint32_t *pt = (page_table) + (PT_LENGTH * pdindex);
 
     /*
     kprintf("pdindex = %u. Content = 0x%x. pt = 0x%x\n", (uint64_t) pdindex,
@@ -100,7 +114,7 @@ void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags)
     {
         // kprintf("yiss\n");
         uint32_t i;
-        for(i = 0; i < 1024; ++i)
+        for(i = 0; i < PT_LENGTH; ++i)
         {
             pt[i] = 3; /* attribute set to: supervisor level, read/write, present(011 in binary) */
         }
@@ -133,17 +147,4 @@ uint32_t real_addr(uint32_t virtual_addr)
         return (*(page_directory + entry) >> 12) & ~(0xFFF);
 
     return 0;
-}
-
-void get_multiboot_info(struct multiboot_info *mbt, uint64_t *bytes)
-{
-    memory_map_t *mmap = (memory_map_t *) mbt->mmap_addr;
-    int i = 0;
-    while((uint32_t) mmap < mbt->mmap_addr + mbt->mmap_length)
-    {
-        if(mmap->type == 1)
-            *bytes +=   (uint64_t) (mmap->length_low    | (uint64_t) (mmap->length_high) << 32) +
-                        (uint64_t) (mmap->base_addr_low | (uint64_t) (mmap->base_addr_high) << 32);
-        mmap = (memory_map_t *) ((unsigned int) mmap + mmap->size + sizeof(mmap->size));
-    }
 }

@@ -5,17 +5,33 @@
 #include <system.h>
 #include <multiboot.h>
 
+#define PD_LENGTH 1024
+#define PT_LENGTH 1024
+
 struct page_descriptor
 {
     int pdindex, ptindex;
 };
 
+/** Initialises paging */
 void init_paging(void);
-// void map_page(uint32_t virtual_addr, uint64_t real_addr);
-void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags);
-uint32_t real_addr(uint32_t virtual_addr);
-uint32_t allocate_page();
 
-void get_multiboot_info(struct multiboot_info *mbt, uint64_t *bytes);
+/** Map a virtual 4K-aligned address to a physical 4K-aligned address */
+void map_page(uint32_t virtual_addr, uint32_t real_addr, unsigned int flags);
+
+/** Returns the physical address of a virtual address */
+uint32_t real_addr(uint32_t virtual_addr);
+
+/** Allocates a page to a process */
+uint32_t allocate_page(uint16_t proc_id);
+
+/** Prints information about the next available page */
+void print_next_available_page();
+
+/** Allocates x amount of bytes */
+void *malloc(uint32_t size);
+
+/** Frees allocated memory */
+void free(void *ptr);
 
 #endif

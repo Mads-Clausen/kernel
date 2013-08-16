@@ -31,36 +31,23 @@ void kmain(struct multiboot_info *mbt)
     map_page(0xFD7FF000, 0x60000, 3);
     int *p = (int *) 0xFD7FF000;
     *p = 12;
-    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, (uint64_t) *p);
+    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p, *p);
 
     map_page(0x10000000, 0x60000, 3);
     int *p2 = (int *) 0x10000000;
-    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p2, (uint64_t) *p2);
+    kprintf("*(0x%x) = %i\n", (uint64_t) (uint32_t) p2, *p2);
 
-    uint32_t addr = allocate_page();
-    uint32_t pdindex = addr >> 22;
-    uint32_t ptindex = addr >> 12 & 0x3FF;
-    kprintf("Allocated page: 0x%x, pdi: %u, pti: %u\n", (uint64_t) addr, (uint64_t) pdindex, (uint64_t) ptindex);
+    print_next_available_page();
+    uint32_t ap = allocate_page(203);
+    map_page(ap, 0x60000, 3);
+    int *p3 = (int *) ap;
+    kprintf("*(0x%x) = %i\n", (uint64_t) ap, *p3);
+
+    print_next_available_page();
+    ap = allocate_page(203);
+    kprintf("ap = 0x%x\n", (uint32_t) ap);
 
     _asm_print_test();
-    /*  code for function:
-     *
-     *  section .text
-     *      global _asm_print_test
-     *
-     *  _asm_print_test:
-     *      mov eax, 0x04  ; write
-     *      mov ebx, 0x01  ; to terminal
-     *      mov ecx, hello ; the buffer to write from
-     *      int 0x80
-     *
-     *  [...]
-     *
-     *  section .rodata
-     *  hello: db "Hello, World!", 0x0a
-     */
-
-    kprintf("\n");
 
     return;
 }

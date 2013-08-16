@@ -121,8 +121,6 @@ void isr_install()
     idt_set_gate(29, (uint32_t) _isr29, 0x08, 0x8E);
     idt_set_gate(30, (uint32_t) _isr30, 0x08, 0x8E);
     idt_set_gate(31, (uint32_t) _isr31, 0x08, 0x8E);
-
-    kprintf("Value of IDT[0]: 0x%x\n", (uint64_t) (idt[0].base_lo | (idt[0].base_hi << 16)));
 }
 
 char *exception_msgs[] = 

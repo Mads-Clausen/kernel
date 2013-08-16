@@ -9,6 +9,10 @@ int cur_x, cur_y;
 void vga_init()
 {
     buffer = (uint16_t *) 0xB8000;
+    unsigned int x, y;
+    for(x = 0; x < VGA_TEXT_WIDTH; ++x)
+        for(y = 0; y < VGA_TEXT_HEIGHT; ++y)
+            buffer[x + y * VGA_TEXT_WIDTH] = _vga_make_entry(' ', vga_fg, vga_bg, 0);
 }
 
 void vga_setmode(enum VGA_MODE mode)

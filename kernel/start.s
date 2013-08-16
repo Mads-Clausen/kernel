@@ -519,4 +519,4 @@ _asm_print_test:
     ret
 
 section .rodata
-hello: db "Hello, World!", 0x0a
+hello: db "Hello, World!", 0x0A
