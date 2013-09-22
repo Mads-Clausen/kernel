@@ -1,5 +1,7 @@
 #include <system.h>
 
+struct regs last_interrupt_regs;
+
 uint8_t inb(uint16_t port)
 {
     uint8_t ret;

@@ -37,6 +37,8 @@ extern char _isr29[];
 extern char _isr30[];
 extern char _isr31[];
 
+extern struct regs last_interrupt_regs;
+
 /* Defines an IDT entry */
 struct idt_entry
 {
@@ -150,6 +152,8 @@ extern uint32_t _read_cr2();
 
 void _interrupt_handler(struct regs *r)
 {
+    last_interrupt_regs = *r;
+
     if(r->int_no < 19)
     {
         puts_c(exception_msgs[r->int_no], COLOR_RED, COLOR_BLACK);
@@ -178,7 +182,8 @@ void _interrupt_handler(struct regs *r)
         }
 
         kprintf("Error code: 0x%x, %u\n", (uint64_t) r->err_code, (uint64_t) r->err_code);
-        kprintf("Error occured at virtual address 0x%x\n", (uint32_t) r->eip);
+        kprintf("Error occured at virtual address 0x%x\n", (uint64_t) r->eip);
+        kprintf("while trying to write to address 0x%x\n", (uint64_t) _read_cr2());
 
         kprintf("Register dump:\n");
         dump_regs(r);

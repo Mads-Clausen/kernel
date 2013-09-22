@@ -3,10 +3,16 @@
 #include <mem.h>
 #include <multiboot.h>
 #include <version.h>
+#include <kthread.h>
 
 #include <stdint.h>
 
 extern void _asm_print_test();
+
+void thread_test()
+{
+    kprintf("Hello from thread.\n");
+}
 
 void kmain(struct multiboot_info *mbt)
 {
@@ -46,6 +52,11 @@ void kmain(struct multiboot_info *mbt)
     print_next_available_page();
     ap = allocate_page(203);
     kprintf("ap = 0x%x\n", (uint32_t) ap);
+
+    struct kthread thread;
+    create_kthread(thread_test, &thread);
+    start_kthread(&thread);
+    kprintf("Returned from thread.\n");
 
     _asm_print_test();
 

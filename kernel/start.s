@@ -502,6 +502,57 @@ _flush_tlb:
     mov cr3, eax
     ret
 
+global _get_registers
+_get_registers:
+    ;push eax
+    ;push ebx
+    ;mov eax, [esp+8]
+    ;
+    ;mov ebx, [esp]
+    ;mov [eax], ebx
+    ;pop ebx
+    ;mov [eax+4], ebx
+    ;mov [eax+8], ecx
+    ;mov [eax+12], edx
+    ;mov [eax+16], edi
+    ;mov [eax+20], esi
+    ;mov [eax+24], ebp
+    ;mov [eax+28], esp
+    ;mov [eax+32], gs
+    ;mov [eax+36], fs
+    ;mov [eax+40], es
+    ;mov [eax+44], ds
+    ;
+    ;pop eax
+    ;
+    ;ret
+
+    pushad
+    push gs
+    push fs
+    push es
+    push ds
+
+    ret
+
+global _set_registers
+_set_registers:
+
+    ret
+
+global kthread_start_asm
+kthread_start_asm:
+    pushf
+    pusha
+    mov edx, esp
+    mov esp, eax
+    mov [esp], dword kthread_done
+    call ecx
+    kthread_done:
+    mov esp, edx
+    popa
+    popf
+    ret
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -516,6 +567,7 @@ _asm_print_test:
     mov edx, 10 ; light green
     int 0x80
     popa
+    push ebx
     ret
 
 section .rodata

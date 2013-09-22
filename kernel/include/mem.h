@@ -28,6 +28,9 @@ uint32_t allocate_page(uint16_t proc_id);
 /** Prints information about the next available page */
 void print_next_available_page();
 
+/** Sets the page directory pointer */
+void set_page_directory(uint32_t *pd);
+
 /** Allocates x amount of bytes */
 void *malloc(uint32_t size);
 

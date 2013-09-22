@@ -41,7 +41,7 @@ uint16_t _vga_make_entry(char c, enum VGA_COLOR _fg_color, enum VGA_COLOR _bg_co
     return 0;
 }
 
-/* easy interface for _vga_make_entry(), this time using a struct */
+/* easy interface for _vga_make_entry(), using a struct */
 uint16_t vga_make_entry(struct vga_entry *e)
 {
     return _vga_make_entry(e->c, e->fg_color, e->bg_color, e->blink);

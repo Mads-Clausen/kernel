@@ -16,6 +16,7 @@ kernel/include/syscall.h \
 kernel/include/version.h \
 kernel/include/system.h \
 kernel/include/mem.h \
+kernel/include/kthread.h \
 kernel/include/multiboot.h
 
 OBJS      = \
@@ -27,13 +28,18 @@ obj/system.o \
 obj/syscall.o \
 obj/vga.o \
 obj/mem.o \
+obj/kthread.o \
 obj/multiboot.o \
 obj/start.o \
 obj/bootload.o
 
-default: $(OBJS)
+default: prepare $(OBJS)
 	$(LINKER) $(OBJS) $(LFLAGS)
 	# $(BURNER)
+
+prepare:
+	mkdir -p obj/
+	mkdir -p grub/boot/
 
 run: default
 	$(EMULATOR) -kernel $(BIN)
@@ -60,6 +66,9 @@ obj/vga.o: kernel/video/vga.c $(HEADERS)
 	$(CC) $(CFLAGS) $< -o $@
 
 obj/mem.o: kernel/sys/mem.c $(HEADERS)
+	$(CC) $(CFLAGS) $< -o $@
+
+obj/kthread.o: kernel/sys/kthread.c $(HEADERS)
 	$(CC) $(CFLAGS) $< -o $@
 
 obj/multiboot.o: kernel/boot/multiboot.c $(HEADERS)
